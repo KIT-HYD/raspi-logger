@@ -14,6 +14,16 @@ to describe:
 * enable W1
 * (depending on kernel version, use GPIO4 and GPIO17 for W1)
 
+### Enable one wire on startup
+
+The script `raspi/scripts/enable_w1.sh` enables W1 on GPIO 4 and 17. Start it on each startup, eg. via cronjob
+
+```sh
+crontab -e
+@reboot /home/pi/temperature-sensor/raspi/scripts/enable_w1.sh
+```
+Adjust the path, if you cloned the repo somewhere else.
+
 ## Connect
 
 On the same network, search for the Raspi:
