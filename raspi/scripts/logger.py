@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime as dt
-from time import time
+from time import time, sleep
 
 from ds18b20 import read_sensor
 from util import parse_interval_to_seconds
@@ -47,7 +47,7 @@ def stream(interval='15sec', dry=False, **kwargs):
     print(outstr)
 
     # sleep for the remaining time
-    time.sleep(interval - (time() - t1))
+    sleep(interval - (time() - t1))
 
     # call again
     stream(interval=interval, dry=dry, **kwargs)
