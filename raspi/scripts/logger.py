@@ -1,11 +1,13 @@
 import os
 import json
 from datetime import datetime as dt
+from time import time
 
 from ds18b20 import read_sensor
+from util import parse_interval_to_seconds
 
 
-def save_data(path=None, in_soil=False, **kwargs):
+def save_data(path=None, in_soil=False, dry=False, **kwargs):
     # create a new file per day
     if path is None:
         date = dt.now().date()
@@ -21,13 +23,44 @@ def save_data(path=None, in_soil=False, **kwargs):
         data = read_sensor(in_soil=in_soil, **kwargs)
     
     # save data
-    with open(path, 'w') as js:
-        json.dump(data, js, indent=4)
+    if not dry:
+        with open(path, 'w') as js:
+            json.dump(data, js, indent=4)
 
     # return the data for reuse
     return data
 
 
+def stream(interval='15sec', dry=False, **kwargs):
+    # get the start time
+    t1 = time()
+    
+    if isinstance(s, str):
+        interval = parse_interval_to_seconds(interval)
+    
+    data = save_data(dry=dry, **kwargs)
+
+    # stringify
+    outstr = json.dumps(data, indent=4)
+
+    # print
+    print(outstr)
+
+    # sleep for the remaining time
+    time.sleep(interval - (time() - t1))
+
+    # call again
+    stream(interval=interval, dry=dry, **kwargs)
+
+
+def run(interval='15sec', **kwargs):
+    # run with given interval and no print to stdout
+    pass
+
+
 if __name__=='__main__':
     import fire
-    fire.Fire(save_data)
+    fire.Fire({
+        'save': save_data,
+        'stream': stream
+    })
