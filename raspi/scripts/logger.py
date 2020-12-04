@@ -35,7 +35,7 @@ def stream(interval='15sec', dry=False, **kwargs):
     # get the start time
     t1 = time()
     
-    if isinstance(s, str):
+    if isinstance(interval, str):
         interval = parse_interval_to_seconds(interval)
     
     data = save_data(dry=dry, **kwargs)
