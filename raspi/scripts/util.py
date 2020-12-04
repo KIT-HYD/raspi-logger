@@ -27,4 +27,30 @@ def get_serial_number():
     )
 
     return versions
-        
+
+
+def parse_interval_to_seconds(s: str) -> int:
+    s = s.lower()
+
+    # Hours
+    if 'hrs' in s:
+        s = s.replace('hrs', 'h')
+    if 'h' in s:
+        s = s.replace('h', '')
+        t = int(s)
+        return t * 3600
+    
+    # Minutes
+    if 'min' in s:
+        s = s.replace('min', 'm')
+    if 'm' in s:
+        s = s.replace('m', '')
+        t = int(s)
+        return t * 60
+
+    # Seconds
+    if 'sec' in s:
+        s = s.replace('sec', 's')
+    if 's' in s:
+        s = s.replace('s', '')
+        return int(s)
