@@ -17,7 +17,7 @@ def get_serial_number():
                 elif line.startswith('Revision'):
                     versions['revision'] = line.split(':')[1].strip()
                 elif line.startswith('Serial'):
-                    version['serial'] = line.split(':')[1].strip()
+                    versions['serial'] = line.split(':')[1].strip()
 
     except:
         versions = dict(
