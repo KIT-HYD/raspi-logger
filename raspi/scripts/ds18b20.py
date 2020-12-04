@@ -24,9 +24,8 @@ def _get_temperature(sensor_path):
     return value, '\n'.join(c)
 
 
-def read_sensor(path='/sys/bus/w1/devices/', as_generator=False, in_soil=False, omit_sensor=False, omit_keyword=False):
-    if not as_generator:
-        return list(read_sensor(path=path, as_generator=True, in_soil=in_soil, omit_sensor=omit_sensor, omit_keyword=omit_keyword))
+def read_sensor(path='/sys/bus/w1/devices/', in_soil=False, omit_sensor=False, omit_keyword=False):
+    data = []
 
     # get the Raspi serial number
     versions = get_serial_number()
@@ -56,7 +55,10 @@ def read_sensor(path='/sys/bus/w1/devices/', as_generator=False, in_soil=False, 
         if not omit_keyword:
             d.update(variable)
 
-        yield d
+        data.append(d)
+    
+    # return
+    return data
 
 
 if __name__ == '__main__':
