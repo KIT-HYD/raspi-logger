@@ -1,0 +1,4 @@
+{
+    "loggerPath": "/home/pi/logger",
+    "loggerInterval": "15sec"
+}

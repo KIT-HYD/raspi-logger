@@ -1,4 +1,6 @@
 import os
+import json
+
 
 def get_serial_number():
     # dummy versions
@@ -54,3 +56,23 @@ def parse_interval_to_seconds(s: str) -> int:
     if 's' in s:
         s = s.replace('s', '')
         return int(s)
+
+
+def config(**kwargs):
+    CONF_FILE = os.path.join(os.path.dirname(__file__), 'CONFIG.JSON')
+    
+    # get the config
+    with open(CONF_FILE, 'r') as f:
+        conf = json.load(f)
+
+    # check if we are in read or write mode
+    if len(kwargs.keys()) == 0:
+        return conf 
+    else:
+        conf.update(kwargs)
+
+        # write
+        with open(CONF_FILE, 'w') as f:
+            json.dump(conf, f, indent=4)
+        
+        return conf
