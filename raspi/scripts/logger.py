@@ -1,10 +1,11 @@
 import os
+from os.path import join as pjoin
 import json
 from datetime import datetime as dt
 from time import time, sleep
 
 from ds18b20 import read_sensor
-from util import parse_interval_to_seconds
+from util import parse_interval_to_seconds, config
 
 
 def save_data(path=None, in_soil=False, dry=False, **kwargs):
@@ -12,7 +13,10 @@ def save_data(path=None, in_soil=False, dry=False, **kwargs):
     if path is None:
         date = dt.now().date()
         fname = '%d_%d_%d_raw_log.json' % (date.year, date.month, date.day)
-        path = os.path.join(os.path.expanduser('~'), 'logger', fname)
+
+        # get path
+        conf = config()
+        path = pjoin(conf.get('loggerPath', pjoin(os.path.expanduser('~'), 'logger')), fname)
 
     if not os.path.exists(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
@@ -40,9 +44,14 @@ def save_data(path=None, in_soil=False, dry=False, **kwargs):
     return data
 
 
-def stream(interval='15sec', dry=False, **kwargs):
+def stream(interval=None, dry=False, **kwargs):
     # get the start time
     t1 = time()
+    
+    if interval is None:
+        interval = config().get('loggerInterval', '1min')
+    else:
+        config(loggerInterval=interval)
     
     if isinstance(interval, str):
         interval = parse_interval_to_seconds(interval)
@@ -59,12 +68,28 @@ def stream(interval='15sec', dry=False, **kwargs):
     sleep(interval - (time() - t1))
 
     # call again
-    stream(interval=interval, dry=dry, **kwargs)
+    stream(dry=dry, **kwargs)
 
 
-def run(interval='15sec', **kwargs):
-    # run with given interval and no print to stdout
-    pass
+def run(interval=None, **kwargs):
+    # get the start time
+    t1 = time()
+    
+    if interval is None:
+        interval = config().get('loggerInterval', '1min')
+    else:
+        config(loggerInterval=interval)
+    
+    if isinstance(interval, str):
+        interval = parse_interval_to_seconds(interval)
+    
+    save_data(dry=False, **kwargs)
+
+    # sleep for the remaining time
+    sleep(interval - (time() - t1))
+
+    # call again
+    run(**kwargs)
 
 
 if __name__=='__main__':
