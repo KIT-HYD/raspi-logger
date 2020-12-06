@@ -58,7 +58,7 @@ def parse_interval_to_seconds(s: str) -> int:
         return int(s)
 
 
-def config(**kwargs):
+def config(**kwargs) -> dict:
     CONF_FILE = os.path.join(os.path.dirname(__file__), 'CONFIG.JSON')
     
     # get the config
