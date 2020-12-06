@@ -24,8 +24,11 @@ def save_data(path=None, in_soil=False, dry=False, **kwargs):
     
     # save data
     if not dry:
-        with open(path, 'r') as f:
-            old_data = json.load(f)
+        try:
+            with open(path, 'r') as f:
+                old_data = json.load(f)
+        except:
+            old_data = []
         with open(path, 'w') as js:
             old_data.extend(data)
             json.dump(old_data, js, indent=4)
