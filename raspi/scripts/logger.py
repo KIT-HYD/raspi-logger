@@ -12,7 +12,10 @@ def save_data(path=None, in_soil=False, dry=False, **kwargs):
     if path is None:
         date = dt.now().date()
         fname = '%d_%d_%d_raw_log.json' % (date.year, date.month, date.day)
-        path = os.path.join(os.path.expanduser('~'), fname)
+        path = os.path.join(os.path.expanduser('~'), 'logger', fname)
+
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
 
     # build up an in_soil list if needed
     data = []
