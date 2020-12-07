@@ -18,7 +18,7 @@ def requirements():
 
 
 setup(
-    name='raspi-logger',
+    name='rpilog',
     version=version(),
     author='Mirko Mälicke',
     author_email='mirko@hydrocode.de',
