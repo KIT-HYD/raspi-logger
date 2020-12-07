@@ -4,7 +4,7 @@ import glob
 from datetime import datetime as dt
 
 from .util import get_serial_number
-import keywords
+from raspi_logger import keywords
 
 
 def _get_sensors(path):

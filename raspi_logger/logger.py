@@ -7,7 +7,7 @@ from crontab import CronTab
 
 from .ds18b20 import read_sensor
 from .util import parse_interval_to_seconds, config
-from sqlite_backend import append_data
+from .sqlite_backend import append_data
 
 
 def _save_json_backend(path, new_data, conf):

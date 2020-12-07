@@ -1,7 +1,7 @@
 import fire
 
-from main import run, activate, deactivate
-from logger import stream
+from .main import run, activate, deactivate
+from .logger import stream
 
 
 fire.Fire({
