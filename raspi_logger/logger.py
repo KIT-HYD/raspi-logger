@@ -5,8 +5,8 @@ from datetime import datetime as dt
 from time import time, sleep
 from crontab import CronTab
 
-from ds18b20 import read_sensor
-from util import parse_interval_to_seconds, config
+from .ds18b20 import read_sensor
+from .util import parse_interval_to_seconds, config
 from sqlite_backend import append_data
 
 

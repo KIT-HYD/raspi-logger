@@ -3,7 +3,7 @@ import re
 import glob
 from datetime import datetime as dt
 
-from util import get_serial_number
+from .util import get_serial_number
 import keywords
 
 

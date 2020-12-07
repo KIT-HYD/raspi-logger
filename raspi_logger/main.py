@@ -1,7 +1,7 @@
 from crontab import CronTab
 
-from util import config, parse_interval_to_seconds
-from logger import save_data
+from .util import config, parse_interval_to_seconds
+from .logger import save_data
 
 
 # maybe activate a a sensor protocol directly? for multiple cronjobs?
