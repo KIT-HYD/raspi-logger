@@ -91,16 +91,9 @@ def stream(interval=None, dry=False, **kwargs):
     stream(dry=dry, **kwargs)
 
 
-def run(action: 'log' | 'activate' | 'deactive'='log', **kwargs):
-    if action == 'activate':
-        cron = CronTab(user=True)
-        job = cron.new(command='', comment='')
-    raise NotImplementedError
-
 if __name__=='__main__':
     import fire
     fire.Fire({
         'save': save_data,
         'stream': stream,
-        'run': run
     })
