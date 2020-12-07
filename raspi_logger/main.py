@@ -5,7 +5,7 @@ from logger import save_data
 
 
 # maybe activate a a sensor protocol directly? for multiple cronjobs?
-def activate(basecmd='python3 -m rpilog run'):
+def activate(basecmd='python3 -m raspi_logger run'):
     cmt = 'raspi-logger-cron'
     # set the interval
     conf = config()

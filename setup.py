@@ -18,7 +18,7 @@ def requirements():
 
 
 setup(
-    name='rpilog',
+    name='raspi_logger',
     version=version(),
     author='Mirko Mälicke',
     author_email='mirko@hydrocode.de',
@@ -29,7 +29,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'rpilog = raspi_logger.__main__' 
+            'raspi_logger = raspi_logger.__main__' 
         ]
     },
     zip_safe=False
