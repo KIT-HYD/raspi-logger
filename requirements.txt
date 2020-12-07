@@ -1,1 +1,4 @@
 fire
+python-crontab
+sqlalchemy
+dash
