@@ -3,6 +3,7 @@ from os.path import join as pjoin
 import json
 from datetime import datetime as dt
 from time import time, sleep
+from crontab import CronTab
 
 from ds18b20 import read_sensor
 from util import parse_interval_to_seconds, config
@@ -91,6 +92,9 @@ def stream(interval=None, dry=False, **kwargs):
 
 
 def run(action: 'log' | 'activate' | 'deactive'='log', **kwargs):
+    if action == 'activate':
+        cron = CronTab(user=True)
+        job = cron.new(command='', comment='')
     raise NotImplementedError
 
 if __name__=='__main__':
