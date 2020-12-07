@@ -24,19 +24,14 @@ def _get_temperature(sensor_path):
     return value, '\n'.join(c)
 
 
-def read_sensor(path='/sys/bus/w1/devices/', in_soil=False, omit_sensor=False, omit_keyword=False):
+def read_sensor(path='/sys/bus/w1/devices/', omit_sensor=False, omit_keyword=False, conf={}):
     data = []
 
     # get the Raspi serial number
     versions = get_serial_number()
 
-    # add the correct variable and sensor information
-    _uuid = keywords.SOIL_TEMPERATURE if in_soil else keywords.AIR_TEMPERATURE
-    variable = dict(
-        variableName='SOIL TEMPERATURE' if in_soil else 'AIR TEMPERATURE',
-        gcmdURL=keywords.CONCEPT_URL.format(uuid=_uuid, fmt='xml'),
-        gcmdUUID=_uuid
-    )
+    # get sensor config
+    sensors = conf.get('sensors', {})
 
     for p in _get_sensors(path):
         temperature, hextemp = _get_temperature(p)
@@ -50,10 +45,29 @@ def read_sensor(path='/sys/bus/w1/devices/', in_soil=False, omit_sensor=False, o
         )
 
         # extend
-        if not omit_sensor:
-            d.update(versions)
         if not omit_keyword:
+            # get the sensor config
+            if p in sensors:
+                extra = sensors[p]
+            elif '_all_' in sensors:
+                extra = sensors['_all_']
+            else:
+                extra = {}
+            in_soil = extra.get("in_soil", False)
+        
+            # add the correct variable and sensor information
+            _uuid = keywords.SOIL_TEMPERATURE if in_soil else keywords.AIR_TEMPERATURE
+            variable = dict(
+            variableName='SOIL TEMPERATURE' if in_soil else 'AIR TEMPERATURE',
+                gcmdURL=keywords.CONCEPT_URL.format(uuid=_uuid, fmt='xml'),
+                gcmdUUID=_uuid
+            )
+
+            # update
             d.update(variable)
+
+        if not omit_sensor:
+            d.update(versions)            
 
         data.append(d)
     
