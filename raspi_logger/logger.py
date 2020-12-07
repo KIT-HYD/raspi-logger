@@ -47,6 +47,10 @@ def save_data(path=None, dry=False, **kwargs):
     # in dry runs, only return the data
     if dry:
         return data
+
+    if len(data) == 0:
+        print('[ERROR]: recieved no data. Need better logging. Sorry.')
+        return []
     
     # check the registered backends
     for name, c in conf.get('loggerBackends', {}).items():
