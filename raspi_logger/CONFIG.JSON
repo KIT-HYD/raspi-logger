@@ -6,7 +6,7 @@
         "json": {
             "enabled": true
         },
-        "sqlite3": {
+        "sqlite": {
             "enabled": false
         }
     },

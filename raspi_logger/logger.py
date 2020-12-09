@@ -58,7 +58,7 @@ def save_data(path=None, dry=False, **kwargs):
         if c.get('enabled', True):
             if name == 'json':
                 _save_json_backend(path, data, conf)
-            elif name == 'sqlite3':
+            elif name == 'sqlite':
                 append_data(data, conf, path)
 
     # return the data for reuse
