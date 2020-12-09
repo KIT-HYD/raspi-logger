@@ -57,3 +57,28 @@ def run():
 
     # do the logging - TODO: here we could add a logic to handle more sensors
     save_data()
+
+
+def settings(interval=None, enable=None, disable=None, enable_backend=None, disable_backend=None):
+    # check the settings
+    # set new Interval
+    if interval is not None:
+        # TODO: validate the settings before writing
+        config(loggerInterval=interval)
+
+    # activate or deactivate the logger
+    if isinstance(enable, bool) and enable:
+        activate()
+    if isinstance(disable, bool) and disable:
+        deactivate()
+
+    # check if a storage backend should be enabled
+    backends = config().get('loggerBackends')
+    if enable_backend is not None:
+        backends[enable_backend]['enabled'] = True
+    if disable_backend is not None:
+        backends[disable_backend]['enabled'] = False
+    config(loggerBackends=backends)
+
+    return config()
+    
