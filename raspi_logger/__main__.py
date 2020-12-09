@@ -2,6 +2,7 @@ import fire
 
 from .main import run, activate, deactivate, settings
 from .logger import stream
+from .util import enable_w1
 
 
 fire.Fire({
@@ -12,5 +13,6 @@ fire.Fire({
     'start': activate,
     'deactivate': deactivate,
     'stop': deactivate,
-    'stream': stream
+    'stream': stream,
+    'enable_w1': enable_w1
 })

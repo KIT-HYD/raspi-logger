@@ -1,6 +1,11 @@
 import os
 import json
+import shutil
+from crontab import CronTab
 
+
+DEFAULT_CONF_FILE = os.path.join(os.path.dirname(__file__), 'CONFIG.JSON')
+CONF_FILE = os.path.join(os.path.expanduser('~'), 'CONFIG.JSON')
 
 def get_serial_number():
     # dummy versions
@@ -59,7 +64,8 @@ def parse_interval_to_seconds(s: str) -> int:
 
 
 def config(**kwargs) -> dict:
-    CONF_FILE = os.path.join(os.path.dirname(__file__), 'CONFIG.JSON')
+    if not os.path.exists(CONF_FILE):
+        shutil.copy(DEFAULT_CONF_FILE, CONF_FILE)
     
     # get the config
     with open(CONF_FILE, 'r') as f:
@@ -76,3 +82,27 @@ def config(**kwargs) -> dict:
             json.dump(conf, f, indent=4)
         
         return conf
+
+
+def reset_config():
+    shutil.copy(DEFAULT_CONF_FILE, CONF_FILE)
+
+
+def enable_w1():
+    try:
+        if os.geteuid() != 0:
+            raise AttributeError
+    except AttributeError:
+        print('You need root privileges on a UNIX OS to run this command.\nRun again like:\nsudo python3 -m raspi_logger enable_w1')
+        return
+
+    # get the script location
+    PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'enable_w1.sh'))
+    
+    # we run with sudo
+    cron = CronTab(user='root')
+    job = cron.new(command='%s' % PATH)
+    job.every_reboot()
+    cron.write()
+
+    print('OneWire enabled.')
