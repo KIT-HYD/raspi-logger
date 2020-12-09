@@ -5,7 +5,21 @@ sure any kind of internet connectivity is available.
 
 ## Install instructions
 
-Used a Raspian image. 
+Install via pip, but be sure to use the 3 version.
+
+```bash
+pip3 install raspi_logger
+```
+
+The other possibility is to clone the repo to `/home/pi/` and run inside the repo:
+
+```bash
+python3 setup.py develop
+```
+
+
+
+I used a Raspian image for development. 
 
 to describe:
 
@@ -16,31 +30,28 @@ to describe:
 
 ### Enable one wire on startup
 
-The script `raspi/scripts/enable_w1.sh` enables W1 on GPIO 4 and 17. Make it executable 
-and start it on each startup, eg. via cronjob:
+The script `raspi_logger/enable_w1.sh` enables W1 on GPIO 4 and 17.
+Run the script with root privileges on each startup. 
+Do that either by hand like:
 
 ```sh
-sudo chmod 755 raspi/scripts/enable_w1.sh
+sudo chmod 755 raspi_logger/enable_w1.sh
 sudo crontab -e
 ```
 And then in the file add the line:
 ```sh
-@reboot /home/pi/temperature-sensor/raspi/scripts/enable_w1.sh
+@reboot path/to/raspi-logger/raspi_logger/enable_w1.sh
 ```
-Adjust the path, if you cloned the repo somewhere else.
 
-## Connect
-
-On the same network, search for the Raspi:
+The CLI of the module can activate the cronjob using the correct paths for you as well.
+But you need to run python with `sudo` then and need to install the package for root user 
+as well.
+Then:
 
 ```bash
-arp -a
+sudo python3 -m raspi_logger enable_w1
 ```
 
-Connect with SSH:
 
-```bash
-ssh pi@<RASPI IP GOES HERE>
-```
 
 
