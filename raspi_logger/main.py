@@ -1,6 +1,6 @@
 from crontab import CronTab
 
-from .util import config, parse_interval_to_seconds
+from .util import config, parse_interval_to_seconds, reset_config
 from .logger import save_data
 
 
@@ -59,7 +59,27 @@ def run():
     save_data()
 
 
-def settings(interval=None, enable=None, disable=None, enable_backend=None, disable_backend=None):
+def settings(interval=None, enable=None, disable=None, enable_backend=None, disable_backend=None, reset=False):
+    """
+    Raspi Logger Settings\n
+    Change the settings of the logger firmware, while the logger is running. 
+    There is no need to shut the logger down. 
+    Use this API for an IoT interface.
+    :param interval: string - set a new measuring interval. E.g: '15min' or '4hrs'
+        Using less than a Minute is experimental. Using less than 10sec can 
+        cause the logger to crash with JSON backend.
+    :param enable: If set, the logger will be activated. See activate command
+    :param disable: IF set, the logger will be deactivated. See deactivate command
+    :param enable_backend: string - Set the storage backend name to be enabed.
+        Currenty a JSON file ('json') or a local sqlite DB ('sqlite') are supported.
+    :param disable_backend: string - see enable_backend
+    :param reset: If set, the config file will be completely reset.
+        If you pass the reset flag along with other flags, these changes will be
+        applied **after** the reset. 
+    """
+    if reset:
+        reset_config()
+
     # check the settings
     # set new Interval
     if interval is not None:
