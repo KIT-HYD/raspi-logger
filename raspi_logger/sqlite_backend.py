@@ -1,10 +1,12 @@
 import os
+from datetime import datetime as dt
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy import Column, BigInteger, String, Boolean
+from sqlalchemy import Column, BigInteger, Integer, String, Boolean, DateTime
 
+from .util import config
 
 Base = declarative_base()
 
@@ -12,7 +14,8 @@ Base = declarative_base()
 class RawData(Base):
     __tablename__ = 'raw_data'
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger().with_variant(Integer, 'sqlite'), primary_key=True)
+    created=Column(DateTime, default=dt.now)
     raw_dump = Column(String, nullable=False)
     uploaded = Column(Boolean, default=False)
 
@@ -24,14 +27,18 @@ def connect(path) -> Session:
     return SessionCls()
 
 
-def append_data(data, conf, path=None):
+def append_data(data, conf=None, path=None):
+    # get config
+    if conf is None:
+        conf = config()
+
     # create the correct connection path
+    p = os.path.join(conf.get('loggerPath'), 'rawDataLogger.db')
     if path is None:
-        p = os.path.join(conf.get('loggerPath'), 'rawDataLogger.db')
-        path = 'sqlite://{%s}' % p
+        path = 'sqlite:///%s' % p
     
     # if the db file does not exist, a call of create_all is needed
-    if not os.path.exists(conf.get('loggerPath')):
+    if not os.path.exists(p):
         session = connect(path)
         Base.metadata.create_all(session.bind)
     else:
