@@ -98,6 +98,9 @@ def enable_w1():
 
     # get the script location
     PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'enable_w1.sh'))
+
+    # make it executeable
+    os.chmod(PATH, 755)
     
     # we run with sudo
     cron = CronTab(user='root')
