@@ -1,9 +1,12 @@
 #!/bin/sh -e
 #
-# Start One Wire protocol
+# This File is not used anymore!
+# Use the cli with sudo to enable pins like:
 #
-# This script should can to the /etc/rc.local to be run
-# on each system startup. Alternatively, define a cronjob:
+# python3 -m raspi_logger enable_w1 --gpio=[4,17]
+#
+# This script should be run on each system startup.
+# You can define a cronjob:
 #
 # >> crontab -e
 # >> @reboot /path/to/enable_w1.sh

@@ -7,6 +7,25 @@ from crontab import CronTab
 DEFAULT_CONF_FILE = os.path.join(os.path.dirname(__file__), 'CONFIG.JSON')
 CONF_FILE = os.path.join(os.path.expanduser('~'), 'CONFIG.JSON')
 
+ENABLE_W1_TEMPLATE="""
+#!/bin/sh -e
+#
+# Start One Wire protocol
+#
+# You need sudo to run this script. 
+# 
+# This script should be called in /etc/rc.local to be run
+# on each system startup. Alternatively, define a cronjob:
+#
+# >> sudo crontab -e
+# >> @reboot /path/to/enable_w1.sh
+#
+
+{commands}
+exit 0
+"""
+
+
 def get_serial_number():
     # dummy versions
     versions = dict(
@@ -88,7 +107,8 @@ def reset_config():
     shutil.copy(DEFAULT_CONF_FILE, CONF_FILE)
 
 
-def enable_w1():
+def enable_w1(path=None, gpio=[4]):
+    TEMPLATE = '# enable w1 on GPIO {pin}\ndtoverlay w1-gpio gpiopin={pin} pullup=0'
     try:
         if os.geteuid() != 0:
             raise AttributeError
@@ -97,7 +117,16 @@ def enable_w1():
         return
 
     # get the script location
-    PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'enable_w1.sh'))
+    if path is None:
+        PATH = os.path.abspath(os.path.join(os.path.expanduser('~'), 'enable_w1.sh'))
+    else:
+        PATH = path
+
+    # create the script
+    cmds = '\n'.join([TEMPLATE.format(pin=pin) for pin in gpio])
+    # copth the file over
+    with open(PATH, 'w') as shellscript:
+        shellscript.write(ENABLE_W1_TEMPLATE.format(commands=cmds))
 
     # make it executeable
     os.chmod(PATH, 0o755)
@@ -108,4 +137,4 @@ def enable_w1():
     job.every_reboot()
     cron.write()
 
-    print('OneWire enabled.')
+    print('OneWire enabled. GPIO: %s' % (', '.join(gpio)))
