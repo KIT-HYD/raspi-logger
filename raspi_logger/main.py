@@ -83,8 +83,14 @@ def settings(interval=None, enable=None, disable=None, enable_backend=None, disa
     # check the settings
     # set new Interval
     if interval is not None:
+        # delete the old activation
+        deactivate()
+
         # TODO: validate the settings before writing
         config(loggerInterval=interval)
+
+        # activate again
+        activate()
 
     # activate or deactivate the logger
     if isinstance(enable, bool) and enable:
