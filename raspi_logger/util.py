@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+from importlib import import_module
 from crontab import CronTab
 
 
@@ -80,6 +81,22 @@ def parse_interval_to_seconds(s: str) -> int:
     if 's' in s:
         s = s.replace('s', '')
         return int(s)
+
+
+def load_sensor(sensor_name: str):
+    from raspi_logger import sensors
+
+    # try to load the module from raspi_logger.sensors
+    try:
+        return import_module(sensor_name, sensors)
+    except AttributeError:
+        pass
+    
+    # if still here, load from globals
+    try:
+        return import_module(sensor_name, globals())
+    except AttributeError:
+        raise ValueError("A sensor of name '%s' could not me loaded." % sensor_name)
 
 
 def config(**kwargs) -> dict:

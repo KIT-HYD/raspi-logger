@@ -5,8 +5,7 @@ from datetime import datetime as dt
 from time import time, sleep
 from crontab import CronTab
 
-from .ds18b20 import read_sensor
-from .util import parse_interval_to_seconds, config
+from .util import parse_interval_to_seconds, config, load_sensor
 from .sqlite_backend import append_data
 
 
@@ -40,9 +39,15 @@ def save_data(path=None, dry=False, **kwargs):
     # get the config
     conf = config()
 
-    # read the sensor data
-    # TODO, here the protocols could be loaded from config.
-    data = read_sensor(conf=conf, **kwargs)
+    # get the sensor modules
+    sensors = conf.get('sensor_modules', ['ds18b20'])
+
+    # data buffer
+    data = []
+    for sensor in sensors:
+        # load the sensor_module:
+        mod = load_sensor(sensor_name=sensor)
+        data.extend(mod.read_sensor(conf=conf, **kwargs))
     
     # in dry runs, only return the data
     if dry:
@@ -93,11 +98,3 @@ def stream(interval=None, dry=False, **kwargs):
 
     # call again
     stream(dry=dry, **kwargs)
-
-
-if __name__=='__main__':
-    import fire
-    fire.Fire({
-        'save': save_data,
-        'stream': stream,
-    })

@@ -14,5 +14,8 @@
         "_all_": {
             "in_soil": false
         }
-    }
+    },
+    "sensor_modules": [
+        "ds18b20"
+    ]
 }

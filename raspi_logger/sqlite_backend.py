@@ -3,7 +3,7 @@ from datetime import datetime as dt
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, BigInteger, Integer, String, Boolean, DateTime
 
 from .util import config
@@ -20,7 +20,7 @@ class RawData(Base):
     uploaded = Column(Boolean, default=False)
 
 
-def connect(path) -> Session:
+def connect(path):
     engine = create_engine(path)
     SessionCls = sessionmaker(bind=engine)
 
