@@ -21,6 +21,7 @@ def activate(basecmd='python3 -m raspi_logger run'):
         for job in jobs:
             job.minute.every(1)
     else:
+        cron = CronTab(user=True)
         job = cron.new(command=basecmd, comment=cmt)
         job.minute.every(int(interval / 60))
     
