@@ -10,7 +10,7 @@ from raspi_logger.backends.json_backend import append_data as append_json
 # TODO: build a load_backend util, just like used with sensors
 
 
-def save_data(path=None, dry=False, **kwargs):
+def current_data(path=None, dry=False, **kwargs):
     # get the config
     conf = config()
 
@@ -45,6 +45,15 @@ def save_data(path=None, dry=False, **kwargs):
     return data
 
 
+def show_current_data(**kwargs):
+    """
+    Issue a new sensor reading, without saving.\n
+    For reading new values **with** saving, use the 
+    current_data function.
+    """
+    return current_data(dry=True, **kwargs)
+
+
 def stream(interval=None, dry=False, **kwargs):
     # get the start time
     t1 = time()
@@ -57,7 +66,7 @@ def stream(interval=None, dry=False, **kwargs):
     if isinstance(interval, str):
         interval = parse_interval_to_seconds(interval)
     
-    data = save_data(dry=dry, **kwargs)
+    data = current_data(dry=dry, **kwargs)
 
     # stringify
     outstr = json.dumps(data, indent=4)
