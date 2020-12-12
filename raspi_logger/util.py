@@ -84,19 +84,17 @@ def parse_interval_to_seconds(s: str) -> int:
 
 
 def load_sensor(sensor_name: str):
-    from raspi_logger import sensors
-
     # try to load the module from raspi_logger.sensors
     try:
-        return import_module(sensor_name, sensors)
+        return import_module('raspi_logger.sensors.%s' % sensor_name)
     except AttributeError:
         pass
     
     # if still here, load from globals
-    try:
-        return import_module(sensor_name, globals())
-    except AttributeError:
-        raise ValueError("A sensor of name '%s' could not me loaded." % sensor_name)
+    if sensor_name in globals():
+        return globals()['sensor_name']
+    else:
+        raise ValueError("A sensor of name '%s' could not be loaded." % sensor_name)
 
 
 def config(**kwargs) -> dict:
