@@ -1,7 +1,7 @@
 import fire
 
 from .main import run, activate, deactivate, settings
-from .logger import stream
+from .logger import stream, show_current_data
 from .util import enable_w1
 
 
@@ -14,5 +14,6 @@ fire.Fire({
     'deactivate': deactivate,
     'stop': deactivate,
     'stream': stream,
+    'read-sensors': show_current_data,
     'enable_w1': enable_w1
 })

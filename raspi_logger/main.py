@@ -1,7 +1,7 @@
 from crontab import CronTab
 
 from .util import config, parse_interval_to_seconds, reset_config
-from .logger import save_data
+from .logger import current_data
 
 
 # maybe activate a a sensor protocol directly? for multiple cronjobs?
@@ -57,7 +57,7 @@ def run():
         return 
 
     # do the logging - TODO: here we could add a logic to handle more sensors
-    save_data()
+    current_data()
 
 
 def settings(interval=None, enable=None, disable=None, enable_backend=None, disable_backend=None, reset=False):
