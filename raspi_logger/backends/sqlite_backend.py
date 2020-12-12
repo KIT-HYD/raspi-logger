@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, BigInteger, Integer, String, Boolean, DateTime
 
-from .util import config
+from raspi_logger.util import config
 
 Base = declarative_base()
 

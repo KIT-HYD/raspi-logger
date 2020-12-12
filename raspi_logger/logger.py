@@ -1,38 +1,13 @@
 import os
-from os.path import join as pjoin
 import json
 from datetime import datetime as dt
 from time import time, sleep
 from crontab import CronTab
 
 from .util import parse_interval_to_seconds, config, load_sensor
-from .sqlite_backend import append_data
-
-
-def _save_json_backend(path, new_data, conf):
-    # create a new file per day
-    if path is None:
-        date = dt.now().date()
-        fname = '%d_%d_%d_raw_log.json' % (date.year, date.month, date.day)
-
-        # get path
-        path = pjoin(conf.get('loggerPath', pjoin(os.path.expanduser('~'), 'logger')), fname)
-
-    if not os.path.exists(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-
-    # save data
-    # get existing data
-    try:
-        with open(path, 'r') as f:
-            old_data = json.load(f)
-    except:
-        old_data = []
-    
-    # append and save
-    with open(path, 'w') as js:
-        old_data.extend(new_data)
-        json.dump(old_data, js, indent=4)
+from raspi_logger.backends.sqlite_backend import append_data as append_sqlite
+from raspi_logger.backends.json_backend import append_data as append_json
+# TODO: build a load_backend util, just like used with sensors
 
 
 def save_data(path=None, dry=False, **kwargs):
@@ -62,9 +37,9 @@ def save_data(path=None, dry=False, **kwargs):
         # check if the backend is currently enabled
         if c.get('enabled', True):
             if name == 'json':
-                _save_json_backend(path, data, conf)
+                append_json(data, conf, path)
             elif name == 'sqlite':
-                append_data(data, conf, path)
+                append_json(data, conf, path)
 
     # return the data for reuse
     return data
