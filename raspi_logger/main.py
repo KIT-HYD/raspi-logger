@@ -5,11 +5,32 @@ from .logger import current_data
 
 
 # maybe activate a a sensor protocol directly? for multiple cronjobs?
-def activate(basecmd='python3 -m raspi_logger run'):
-    cmt = 'raspi-logger-cron'
-    # set the interval
+def activate(sensor='all', basecmd='python3 -m raspi_logger run'):
+    # get the sensor backends
     conf = config()
-    interval = parse_interval_to_seconds(conf.get('loggerInterval', '15min'))
+    sensorBackends = conf.get('sensorBackends')
+
+    # get the sensors to be activated
+    if sensor == 'all':
+        sensors = sensor.Backends.keys()
+    else:
+        sensors = [sensor]
+    
+    for sen in sensors:
+        cmd = '%s --sensor=%s' % (basecmd, sen)
+        __activate(cmt=sen, basecmd=cmd, conf=conf)
+    
+
+def __activate(sensor_name, basecmd, conf):
+    # get the interval setting
+    _interval = conf['sensorBackends'][sensor_name].get('interval')
+    if _interval is None:
+        _interval = conf.get('loggerInterval', '15min')
+    
+    # parse
+    interval = parse_interval_to_seconds(_interval)
+    
+    # determine cronjob settings
     if interval < 60:
         # less than a minute is not supported by crontab
         seconds = list(range(0, 60, interval))
@@ -33,7 +54,22 @@ def activate(basecmd='python3 -m raspi_logger run'):
     print('Saved.')
 
 
-def deactivate(comment='raspi-logger-cron'):
+def deactivate(sensor='all'):
+    # get the sensor backends
+    conf = config()
+    sensorBackends = conf.get('sensorBackends')
+
+    # get the sensors to be activated
+    if sensor == 'all':
+        sensors = sensor.Backends.keys()
+    else:
+        sensors = [sensor]
+    
+    for sen in sensors:
+        __deactivate(comment=sen)
+
+
+def __deactivate(comment):
     # disable the config first
     config(loggerCronjob='disabled')
 

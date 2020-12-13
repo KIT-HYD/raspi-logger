@@ -10,12 +10,12 @@
             "enabled": false
         }
     },
-    "sensors": {
-        "_all_": {
-            "in_soil": false
+    "sensorBackends": {
+        "ds18b20": {
+            "enabled": true,
+            "_all_": {
+                "in_soil": false
+            }
         }
-    },
-    "sensor_modules": [
-        "ds18b20"
-    ]
+    }
 }

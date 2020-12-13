@@ -4,7 +4,13 @@ from os.path import join as pjoin
 from datetime import datetime as dt
 
 
-def append_data(new_data, conf, path):
+def append_data(new_data, conf, path=None):
+    """
+    path is deprecated and will be removed. The file path has to be specified
+    in the CONFIG file.
+    """
+    # set path to None
+    path = None
     # create a new file per day
     if path is None:
         date = dt.now().date()

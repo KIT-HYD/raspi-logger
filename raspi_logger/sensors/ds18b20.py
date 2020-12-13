@@ -24,14 +24,14 @@ def _get_temperature(sensor_path):
     return value, '\n'.join(c)
 
 
-def read_sensor(path='/sys/bus/w1/devices/', omit_sensor=False, omit_keyword=False, conf={}):
+def read_sensor(path='/sys/bus/w1/devices/', omit_sensor=False, omit_keyword=False, sensor_conf={}):
     data = []
 
     # get the Raspi serial number
     versions = get_serial_number()
 
     # get sensor config
-    sensors = conf.get('sensors', {})
+    #sensor_conf = conf.get('sensorBackends', {}).get('ds18b20', {})
 
     for p in _get_sensors(path):
         temperature, hextemp = _get_temperature(p)
@@ -41,7 +41,7 @@ def read_sensor(path='/sys/bus/w1/devices/', omit_sensor=False, omit_keyword=Fal
             tstamp=dt.now().isoformat(),
             identifier=os.path.basename(p),
             rawData=hextemp,
-            sensorName='DS18B20'
+            sensorName=sensor_cof.get('alias', 'DS18B20')
         )
 
         # extend

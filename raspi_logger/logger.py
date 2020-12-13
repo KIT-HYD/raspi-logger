@@ -10,19 +10,20 @@ from raspi_logger.backends.json_backend import append_data as append_json
 # TODO: build a load_backend util, just like used with sensors
 
 
-def current_data(path=None, dry=False, **kwargs):
+def current_data(sensor='all', dry=False, **kwargs):
     # get the config
     conf = config()
 
     # get the sensor modules
-    sensors = conf.get('sensor_modules', ['ds18b20'])
+    sensorBackends = conf.get('sensorBackends', {'ds18b20': {}})
 
     # data buffer
     data = []
-    for sensor in sensors:
-        # load the sensor_module:
-        mod = load_sensor(sensor_name=sensor)
-        data.extend(mod.read_sensor(conf=conf, **kwargs))
+    for sen, sensor_conf in sensors.items():
+        if sen == 'all' or sen.lower() == sensor.lower():
+            # load the sensor_module:
+            mod = load_sensor(sensor_name=sen)
+            data.extend(mod.read_sensor(conf=sensor_conf, **kwargs))
     
     # in dry runs, only return the data
     if dry:
