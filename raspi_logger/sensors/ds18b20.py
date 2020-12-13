@@ -41,16 +41,16 @@ def read_sensor(path='/sys/bus/w1/devices/', omit_sensor=False, omit_keyword=Fal
             tstamp=dt.now().isoformat(),
             identifier=os.path.basename(p),
             rawData=hextemp,
-            sensorName=sensor_cof.get('alias', 'DS18B20')
+            sensorName=sensor_conf.get('alias', 'DS18B20')
         )
 
         # extend
         if not omit_keyword:
             # get the sensor config
-            if p in sensors:
-                extra = sensors[p]
-            elif '_all_' in sensors:
-                extra = sensors['_all_']
+            if p in sensor_conf:
+                extra = sensor_conf[p]
+            elif '_all_' in sensor_conf:
+                extra = sensor_conf['_all_']
             else:
                 extra = {}
             in_soil = extra.get("in_soil", False)
