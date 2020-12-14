@@ -61,7 +61,7 @@ def deactivate(sensor='all'):
 
     # get the sensors to be activated
     if sensor == 'all':
-        sensors = sensor.Backends.keys()
+        sensors = sensorBackends.keys()
     else:
         sensors = [sensor]
     

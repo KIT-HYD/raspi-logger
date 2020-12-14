@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import glob
 from os.path import join as pjoin
@@ -41,7 +40,7 @@ def append_data(new_data, conf):
         json.dump(old_data, js, indent=4)
 
 
-def read_data(limit=None, max_files=None, file_stream=sys.stdout):
+def read_data(limit=None, max_files=None):
     """
     
     """

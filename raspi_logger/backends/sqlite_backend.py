@@ -20,31 +20,30 @@ class RawData(Base):
     uploaded = Column(Boolean, default=False)
 
 
-def connect(path):
+def connect(conf):
     engine = create_engine(path)
     SessionCls = sessionmaker(bind=engine)
+
+    # create the correct connection path
+    p = os.path.join(conf.get('loggerPath'), 'rawDataLogger.db')
+    path = 'sqlite:///%s' % p
+    
+    # if the db file does not exist, a call of create_all is needed
+    if not os.path.exists(p):
+        Base.metadata.create_all(engine)
 
     return SessionCls()
 
 
 def append_data(data, conf=None, path=None):
+    # TODO: deprecate the path here
     # get config
     if conf is None:
         conf = config()
 
-    # create the correct connection path
-    p = os.path.join(conf.get('loggerPath'), 'rawDataLogger.db')
-    if path is None:
-        path = 'sqlite:///%s' % p
+    # connect to db
+    session = connect(conf=conf)
     
-    # if the db file does not exist, a call of create_all is needed
-    if not os.path.exists(p):
-        session = connect(path)
-        Base.metadata.create_all(session.bind)
-    else:
-        # file was initialized before
-        session = connect(path)
-
     # append the data
     if not isinstance(data, list):
         data = [data]
@@ -61,5 +60,16 @@ def append_data(data, conf=None, path=None):
     return data
     
 
+def read_data(limit=None, conf=None):
+    # get config
+    if conf is None:
+        conf = config()
+
+    # connect to db
+    session = connect(conf=conf)
+
+    query = session.query(RawData).order_by(RawData.created)
+    if limit is not None:
+        query = query.limit(limit)
 
 
