@@ -20,7 +20,7 @@ def current_data(sensor='all', dry=False, **kwargs):
     # data buffer
     data = []
     for sen, sensor_conf in sensorBackends.items():
-        if senor == 'all' or sen.lower() == sensor.lower():
+        if sensor == 'all' or sen.lower() == sensor.lower():
             # load the sensor_module:
             mod = load_sensor(sensor_name=sen)
             data.extend(mod.read_sensor(conf=sensor_conf, **kwargs))
