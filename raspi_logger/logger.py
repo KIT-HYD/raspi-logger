@@ -38,9 +38,9 @@ def current_data(sensor='all', dry=False, **kwargs):
         # check if the backend is currently enabled
         if c.get('enabled', True):
             if name == 'json':
-                append_json(data, conf, path)
+                append_json(data, conf)
             elif name == 'sqlite':
-                append_sqlite(data, conf, path)
+                append_sqlite(data, conf)
 
     # return the data for reuse
     return data
