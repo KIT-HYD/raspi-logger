@@ -12,13 +12,13 @@ def activate(sensor='all', basecmd='python3 -m raspi_logger run'):
 
     # get the sensors to be activated
     if sensor == 'all':
-        sensors = sensor.Backends.keys()
+        sensors = sensorBackends.keys()
     else:
         sensors = [sensor]
     
     for sen in sensors:
         cmd = '%s --sensor=%s' % (basecmd, sen)
-        __activate(cmt=sen, basecmd=cmd, conf=conf)
+        __activate(sensor_name=sen, basecmd=cmd, conf=conf)
     
 
 def __activate(sensor_name, basecmd, conf):
