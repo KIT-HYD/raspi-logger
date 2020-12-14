@@ -21,13 +21,13 @@ class RawData(Base):
 
 
 def connect(conf):
-    engine = create_engine(path)
-    SessionCls = sessionmaker(bind=engine)
-
     # create the correct connection path
     p = os.path.join(conf.get('loggerPath'), 'rawDataLogger.db')
     path = 'sqlite:///%s' % p
-    
+
+    engine = create_engine(path)
+    SessionCls = sessionmaker(bind=engine)
+
     # if the db file does not exist, a call of create_all is needed
     if not os.path.exists(p):
         Base.metadata.create_all(engine)

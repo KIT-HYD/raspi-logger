@@ -19,7 +19,7 @@ def current_data(sensor='all', dry=False, **kwargs):
 
     # data buffer
     data = []
-    for sen, sensor_conf in sensors.items():
+    for sen, sensor_conf in sensorBackends.items():
         if sen == 'all' or sen.lower() == sensor.lower():
             # load the sensor_module:
             mod = load_sensor(sensor_name=sen)
@@ -40,7 +40,7 @@ def current_data(sensor='all', dry=False, **kwargs):
             if name == 'json':
                 append_json(data, conf, path)
             elif name == 'sqlite':
-                append_json(data, conf, path)
+                append_sqlite(data, conf, path)
 
     # return the data for reuse
     return data
