@@ -61,7 +61,7 @@ def append_data(data, conf=None, path=None):
     return data
     
 
-def read_data(limit=None, conf=None):
+def read_data(limit=None, conf=None, **kwargs):
     # get config
     if conf is None:
         conf = config()

@@ -4,7 +4,7 @@ from datetime import datetime as dt
 from time import time, sleep
 from crontab import CronTab
 
-from .util import parse_interval_to_seconds, config, load_sensor
+from .util import parse_interval_to_seconds, config, load_sensor, load_backend
 from raspi_logger.backends.sqlite_backend import append_data as append_sqlite
 from raspi_logger.backends.json_backend import append_data as append_json
 # TODO: build a load_backend util, just like used with sensors
@@ -53,6 +53,19 @@ def show_current_data(**kwargs):
     current_data function.
     """
     return current_data(dry=True, **kwargs)
+
+
+def read_data(backend='json', limit=None, **kwargs):
+    conf = config()
+    bconf = conf.get('loggerBackends', {}).get(backend)
+
+    if bconf is None:
+        print("The '%s' seems to be disabled" % backend)
+        return []
+    
+    # get the read function
+    mod = load_backend(backend_name=backend)
+    return mod.read_data(limit=limit, conf=conf, **kwargs)
 
 
 def stream(interval=None, dry=False, **kwargs):

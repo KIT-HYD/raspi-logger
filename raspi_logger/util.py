@@ -92,9 +92,23 @@ def load_sensor(sensor_name: str):
     
     # if still here, load from globals
     if sensor_name in globals():
-        return globals()['sensor_name']
+        return globals()[sensor_name]
     else:
         raise ValueError("A sensor of name '%s' could not be loaded." % sensor_name)
+
+
+def load_backend(backend_name: str):
+    # try to load the module from raspi_logger.backends
+    try:
+        return import_module('raspi_loggers.backends.%s_backend' % backend_name)
+    except AttributeError:
+        pass
+
+    # if still here, load from globals
+    if backend_name in globals():
+        return globals()[backend_name]
+    else:
+        raise ValueError("A backend of name '%s' could not be loaded." % backend_name)
 
 
 def config(**kwargs) -> dict:

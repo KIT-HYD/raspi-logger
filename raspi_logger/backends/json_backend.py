@@ -40,7 +40,7 @@ def append_data(new_data, conf):
         json.dump(old_data, js, indent=4)
 
 
-def read_data(limit=None, max_files=None):
+def read_data(limit=None, max_files=None, **kwargs):
     """
     
     """
