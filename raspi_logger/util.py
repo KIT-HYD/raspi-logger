@@ -100,7 +100,7 @@ def load_sensor(sensor_name: str):
 def load_backend(backend_name: str):
     # try to load the module from raspi_logger.backends
     try:
-        return import_module('raspi_loggers.backends.%s_backend' % backend_name)
+        return import_module('raspi_logger.backends.%s_backend' % backend_name)
     except AttributeError:
         pass
 
