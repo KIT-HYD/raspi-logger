@@ -69,8 +69,10 @@ def read_data(limit=None, conf=None, **kwargs):
     # connect to db
     session = connect(conf=conf)
 
+    # build query
     query = session.query(RawData).order_by(RawData.created)
     if limit is not None:
         query = query.limit(limit)
 
+    return [json.loads(_d.raw_dump) for _d in query.all()]
 
