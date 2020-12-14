@@ -23,7 +23,7 @@ def current_data(sensor='all', dry=False, **kwargs):
         if sensor == 'all' or sen.lower() == sensor.lower():
             # load the sensor_module:
             mod = load_sensor(sensor_name=sen)
-            data.extend(mod.read_sensor(conf=sensor_conf, **kwargs))
+            data.extend(mod.read_sensor(sensor_conf=sensor_conf, **kwargs))
     
     # in dry runs, only return the data
     if dry:
