@@ -152,4 +152,4 @@ def enable_w1(path=None, gpio=[4]):
     job.every_reboot()
     cron.write()
 
-    print('OneWire enabled. GPIO: %s' % (', '.join(gpio)))
+    print('OneWire enabled. GPIO: %s' % (', '.join([str(pin) for pin in gpio])))
