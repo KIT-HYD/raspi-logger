@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime as dt
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -49,7 +50,7 @@ def append_data(data, conf=None, path=None):
         data = [data]
     
     try:
-        session.add_all([RawData(raw_dump=record) for record in data])
+        session.add_all([RawData(raw_dump=json.dumps(record)) for record in data])
         session.commit()
     except Exception as e:
         session.rollback()
