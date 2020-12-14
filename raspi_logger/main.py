@@ -38,12 +38,12 @@ def __activate(sensor_name, basecmd, conf):
         # get the crontab
         cron = CronTab(user=True)
         cmds = ['sleep %d;%s' % (s, basecmd) for s in seconds]
-        jobs = [cron.new(command=cmd, comment=cmt) for cmd in cmds]
+        jobs = [cron.new(command=cmd, comment=sensor_name) for cmd in cmds]
         for job in jobs:
             job.minute.every(1)
     else:
         cron = CronTab(user=True)
-        job = cron.new(command=basecmd, comment=cmt)
+        job = cron.new(command=basecmd, comment=sensor_name)
         job.minute.every(int(interval / 60))
     
     # save 
