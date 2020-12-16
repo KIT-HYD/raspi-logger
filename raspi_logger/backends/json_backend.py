@@ -91,7 +91,7 @@ def read_data(limit=None, max_files=None, **kwargs):
     return data
 
 
-def delete(all=False, older_than=None):
+def delete(all=False, older_than=None, conf=None):
     """
     Delete old data files
     """
@@ -100,7 +100,8 @@ def delete(all=False, older_than=None):
         return
 
     # read the config
-    conf = config()
+    if conf is None:
+        conf = config()
 
     if not 'loggerPath' in conf:
         print('[ERROR]: No loggerPath configured.')

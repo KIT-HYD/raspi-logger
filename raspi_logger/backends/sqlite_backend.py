@@ -78,7 +78,7 @@ def read_data(limit=None, conf=None, **kwargs):
     return [json.loads(_d.raw_dump) for _d in query.all()]
 
 
-def delete(all=False, older_than=None):
+def delete(all=False, older_than=None, conf=None):
     """
     Delete old data files
     """
@@ -87,7 +87,8 @@ def delete(all=False, older_than=None):
         return
 
     # read the config
-    conf = config()
+    if conf is None:
+        conf = config()
 
     # connect to db
     session = connect(conf=conf)
