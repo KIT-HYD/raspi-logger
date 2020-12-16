@@ -68,6 +68,28 @@ def read_data(backend='json', limit=None, **kwargs):
     return mod.read_data(limit=limit, conf=conf, **kwargs)
 
 
+def delete_data(backend='json', all=False, older_than=None):
+    """
+    """
+    conf = config()
+    bconf = conf.get('loggerBackends', {})
+    
+    if backend == 'all':
+        for name in bconf.keys():
+            delete_data(backend=name, all=all, older_than=older_than)
+    else:
+        bconf = bconf.get(backend)
+
+    if bconf is None:
+        print("The '%s' seems to be disabled" % backend)
+        return []
+    
+    # get the read function
+    mod = load_backend(backend_name=backend)
+    print('Deleting....', end='')
+    mod.delete(all=all, older_than=older_than, conf=conf)
+
+
 def stream(interval=None, dry=False, **kwargs):
     # get the start time
     t1 = time()
