@@ -1,8 +1,10 @@
 import os
+import shutil
 import json
 import glob
 from os.path import join as pjoin
 from datetime import datetime as dt
+from datetime import timedelta as td
 
 from raspi_logger.util import config
 
@@ -15,9 +17,12 @@ def append_data(new_data, conf):
     date = dt.now().date()
     fname = '%d_%d_%d_raw_log.json' % (date.year, date.month, date.day)
 
-    # get path
-    # TODO: depreacte conf as argument and read the config file
-    path = conf.get('loggerPath', pjoin(os.path.expanduser('~'), 'logger'))
+    if not 'loggerPath' in conf:
+        print('[ERROR]: No loggerPath configured.')
+        return []
+
+    # get the file path
+    path = conf['loggerPath']
 
     if not os.path.exists(path):
         os.makedirs(path)
@@ -48,7 +53,7 @@ def read_data(limit=None, max_files=None, **kwargs):
     conf = config()
 
     if not 'loggerPath' in conf:
-        print('[ERROR]: No data saved as JSON.')
+        print('[ERROR]: No loggerPath configured.')
         return []
 
     # get the file path
@@ -84,3 +89,42 @@ def read_data(limit=None, max_files=None, **kwargs):
     # if we reach this line, there was less data than limit or no limit
     data.sort(key=sorter)
     return data
+
+
+def delete(all=False, older_than=None):
+    """
+    Delete old data files
+    """
+    if not all and older_than is None:
+        print("Either set all to 'True' or pass a older_than info to remove old files.")
+        return
+
+    # read the config
+    conf = config()
+
+    if not 'loggerPath' in conf:
+        print('[ERROR]: No loggerPath configured.')
+        return
+
+    # get the file path
+    path = conf['loggerPath']
+
+    if all:
+        shutil.rmtree(path)
+        return
+
+    # otherwise parse older_than
+    if isinstance(older_than, int):
+        dtime = dt.now() - td(days=older_than).timestamp()
+    elif isinstance(older_than, dt):
+        dtime = older_than.timestamp()
+    else:
+        raise AttributeError('older_than has to be of type int or datetime.datetime')
+
+    # get all files
+    data_files = glob.glob(pjoin(path, '*.json'))
+    for fname in data_files:
+        if os.path.getctime(fname) < dtime:
+            os.remove(fname)
+    
+    return
