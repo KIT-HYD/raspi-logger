@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime as dt
+from datetime import timedelta as td
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
@@ -75,4 +76,37 @@ def read_data(limit=None, conf=None, **kwargs):
         query = query.limit(limit)
 
     return [json.loads(_d.raw_dump) for _d in query.all()]
+
+
+def delete(all=False, older_than=None):
+    """
+    Delete old data files
+    """
+    if not all and older_than is None:
+        print("Either set all to 'True' or pass a older_than info to remove old files.")
+        return
+
+    # read the config
+    conf = config()
+
+    # connect to db
+    session = connect(conf=conf)
+
+    if all:
+        session.query(RawData).delete()
+        session.commit()
+        return
+
+    # otherwise parse_older than
+    if isinstance(older_than, int):
+        dtime = dt.now() - td(days=older_than)
+    elif isinstance(older_than, dt):
+        dtime = older_than
+    else:
+        raise AttributeError('older_than has to be of type int or datetime.datetime')
+    
+    # delete 
+    session.query(RawData).filter(RawData.created < dtime).delete()
+    session.commit()
+    return
 
