@@ -91,6 +91,10 @@ def read_data(limit=None, max_files=None, **kwargs):
     return data
 
 
+def download(limit=None, max_files=None, **kwargs):
+    return read_data(limit=limit, max_files=max_files, **kwargs)
+
+
 def delete(all=False, older_than=None, conf=None):
     """
     Delete old data files
