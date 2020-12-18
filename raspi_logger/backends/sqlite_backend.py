@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, BigInteger, Integer, String, Boolean, DateTime
+from sqlalchemy.sql.expression import false
 
 from raspi_logger.util import config
 
@@ -62,7 +63,7 @@ def append_data(data, conf=None, path=None):
     return data
     
 
-def read_data(limit=None, conf=None, **kwargs):
+def read_data(limit=None, start_at=None, only_new=None, conf=None, **kwargs):
     # get config
     if conf is None:
         conf = config()
@@ -72,10 +73,48 @@ def read_data(limit=None, conf=None, **kwargs):
 
     # build query
     query = session.query(RawData).order_by(RawData.created)
+
+    # check for only new data
+    if only_new:
+        query = query.filter(RawData.uploaded==false())
+    
+    # use a start date
+    if start_at is not None:
+        query = query.filter(RawData.created>=start_at)
+    
+    # limit the result if requested
     if limit is not None:
         query = query.limit(limit)
 
+    if kwargs.get('return_iterator', False):
+        return query
     return [json.loads(_d.raw_dump) for _d in query.all()]
+
+
+def download(limit=None, start_at=None, conf=None, force=False, **kwargs):
+    # load the reading query
+    query = read_data(
+        limit=limit,
+        start_at=start_at,
+        conf=conf, 
+        only_new=not force,
+        return_iterator=True
+    )
+
+    # update the uploaded flag
+    output = []
+    for p in query.all():
+        # add to output
+        output.append(json.loads(p.raw_dump))
+
+        # update
+        p.uploaded = True
+        session.add(p)
+    
+    # commit session
+    session.commit()
+
+    return output
 
 
 def delete(all=False, older_than=None, conf=None):
